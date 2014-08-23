@@ -52,9 +52,8 @@ public class AssemblaWeb extends GitRepositoryBrowser {
     }
 
     /**
-     * Shows the difference between the referenced commit and the previous commit.
-     * The changes section also display diffs, so a seperate url is unncessary.
-     * http://[Assembla URL]/commits/[commit]
+     * Shows the history for a particular file up to the referenced commit.
+     * http://[Assembla URL]/commits/[commit]/[path]
      *
      * @param path affected file path
      * @return diff link
@@ -63,7 +62,8 @@ public class AssemblaWeb extends GitRepositoryBrowser {
     @Override
     public URL getDiffLink(Path path) throws IOException {
         GitChangeSet changeSet = path.getChangeSet();
-        return getChangeSetLink(changeSet);
+        URL url = getUrl();
+        return new URL(url, url.getPath() + "commit/" + changeSet.getId() + path.getPath());
     }
 
     /**
@@ -79,9 +79,9 @@ public class AssemblaWeb extends GitRepositoryBrowser {
         GitChangeSet changeSet = path.getChangeSet();
         URL url = getUrl();
         if (path.getEditType() == EditType.DELETE) {
-            return new URL(url, url.getPath() + "nodes/" + changeSet.getParentCommit() + path.getPath());
+            return new URL(url, url.getPath() + "nodes/" + changeSet.getParentCommit() + "/" + path.getPath());
         } else {
-            return new URL(url, url.getPath() + "nodes/" + changeSet.getId() + path.getPath());
+            return new URL(url, url.getPath() + "nodes/" + changeSet.getId() + "/" + path.getPath());
         }
     }
 
